@@ -1,12 +1,17 @@
+#!/usr/bin/python
 '''
     Simple socket client
 '''
  
 import socket
 import sys
+
+if len(sys.argv) < 2:
+    print('You need to inform at list one server port.')
+    exit()
  
 HOST = 'localhost'   # Symbolic name meaning all available interfaces
-PORT = 8888 # Arbitrary non-privileged port
+PORT = int(sys.argv[1]) # Arbitrary non-privileged port
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print('Socket created')
@@ -15,17 +20,26 @@ print('Socket created')
 try:
     s.connect((HOST, PORT))
 except socket.error as msg:
-    print('Connect failed. Error Code : ' + msg + ' Message ')
+    print(msg)
+    print('Connect failed. Error Code. ')
     sys.exit()
     
 print('Socket connection complete')
 
-msg = b'Test'
 
-s.send(msg)
+while True:
+    
+    msg = b''
+    while msg == b'':
+        msg = bytes(input('Type a message(type -q to exit): '),'utf-8')
 
-resp = s.recv(1024)
+    if msg == b'-q':
+        break
 
-print(resp)
+    s.send(msg)
+
+    resp = s.recv(1024)
+
+    print(resp)
 
 s.close()
