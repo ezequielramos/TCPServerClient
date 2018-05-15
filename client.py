@@ -24,22 +24,28 @@ except socket.error as msg:
     print('Connect failed. Error Code. ')
     sys.exit()
     
-print('Socket connection complete')
-
-
-while True:
+def LoopEcho(s):
     
-    msg = b''
-    while msg == b'':
-        msg = bytes(input('Type a message(type -q to exit): '),'utf-8')
+    while True:
+    
+        msg = b''
+        while msg == b'':
+            msg = bytes(input('Type a message(type -q to exit): '),'utf-8')
 
-    if msg == b'-q':
-        break
+        if msg == b'-q':
+            break
 
-    s.send(msg)
+        s.send(msg)
 
-    resp = s.recv(1024)
+        resp = s.recv(1024)
 
-    print(resp)
+        print(resp)
+
+
+if s.recv(1024) == b'accept': 
+    print('Socket connection complete')
+    LoopEcho(s)
+else:
+    print('Socket connection refused')
 
 s.close()
