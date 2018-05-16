@@ -33,7 +33,12 @@ if len(sys.argv) < 3:
     print('You need to inform a server name and a server port. Ex: python server.py S1 1213')
     exit()
 
-SERVERNAME = bytes(sys.argv[1], 'utf-8') 
+
+if sys.version_info.major == 3:
+    SERVERNAME = bytes(sys.argv[1], 'utf-8') # python 3 needs to inform charset encoding on cast
+else:
+    SERVERNAME = bytes(sys.argv[1])
+     
 HOST = 'localhost'   # Symbolic name, meaning all available interfaces
 PORT = int(sys.argv[2]) # Arbitrary non-privileged port
 
