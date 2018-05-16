@@ -11,7 +11,7 @@ $ python server.py [Server Name] [Port]
 $ Ex.: python server.py S1 1213
 ```
 
-Client
+Client:
 
 ```
 $ python client.py [Server Port 1] ([Server Port 2], [Server Port 3], [Server Port N])
