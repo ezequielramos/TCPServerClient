@@ -45,7 +45,6 @@ PORT = int(sys.argv[2]) # Arbitrary non-privileged port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print('Socket created')
  
-#Bind socket to local host and port
 try:
     s.bind((HOST, PORT))
 except socket.error as msg:
@@ -55,13 +54,11 @@ except socket.error as msg:
      
 print('Socket bind complete')
  
-#Start listening on socket
 s.listen(10)
 print('Socket now listening')
  
 while True:
 
-    #wait to accept a connection - blocking call
     try:
         conn, addr = s.accept()
     except KeyboardInterrupt:

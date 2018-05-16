@@ -20,7 +20,6 @@ def connectToServer():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     for port in server_port_list:
-        #Bind socket to local host and port
         try:
             s.connect((server, int(port)))
 
