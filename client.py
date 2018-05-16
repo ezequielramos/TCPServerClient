@@ -6,46 +6,64 @@
 import socket
 import sys
 
-if len(sys.argv) < 2:
-    print('You need to inform at list one server port.')
+sys.argv.pop(0) #discard script name from list
+server_port_list = sys.argv
+
+if len(server_port_list) < 1:
+    print('You need to inform at list one server port. Ex: python client.py 1213 1214 1215')
     exit()
- 
-HOST = 'localhost'   # Symbolic name meaning all available interfaces
-PORT = int(sys.argv[1]) # Arbitrary non-privileged port
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print('Socket created')
+def connectToServer():
+    global server_port_list
 
-#Bind socket to local host and port
-try:
-    s.connect((HOST, PORT))
-except socket.error as msg:
-    print(msg)
-    print('Connect failed. Error Code. ')
+    server = 'localhost'
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    for port in server_port_list:
+        #Bind socket to local host and port
+        try:
+            s.connect((server, int(port)))
+
+            if s.recv(1024) == b'accept': 
+                return s
+
+        except socket.error:
+            pass
+    
+    print('Cant connect to any server. ')
     sys.exit()
     
-def LoopEcho(s):
+def LoopEcho():
+
+    s = connectToServer()
     
     while True:
     
         msg = b''
         while msg == b'':
-            msg = bytes(input('Type a message(type -q to exit): '),'utf-8')
+            try:
+                msg = bytes(input('Type a message(type -q to exit): '),'utf-8')
+            except KeyboardInterrupt:
+                msg = b'-q'
+                break    
 
         if msg == b'-q':
-            break
+            return s
 
         s.send(msg)
 
         resp = s.recv(1024)
 
+        if resp == b'':
+            s = connectToServer()
+            s.send(msg)
+
+            resp = s.recv(1024)
+
+
         print(resp)
 
+s = LoopEcho()
 
-if s.recv(1024) == b'accept': 
-    print('Socket connection complete')
-    LoopEcho(s)
-else:
-    print('Socket connection refused')
-
+print('\nClosing connection.')
 s.close()

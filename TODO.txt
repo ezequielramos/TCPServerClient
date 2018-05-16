@@ -1,1 +1,0 @@
--Client tentar enviar pra outros servidores caso nao consiga na conexao atual
