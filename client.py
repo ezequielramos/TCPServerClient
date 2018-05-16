@@ -45,18 +45,23 @@ def LoopEcho():
                 if sys.version_info.major == 3:
                     msg = bytes(input('Type a message(type -q to exit): '),'utf-8') # python 3 needs to inform charset encoding on cast
                 else:
-                    msg = bytes(input('Type a message(type -q to exit): '))
+                    msg = bytes(raw_input('Type a message(type -q to exit): '))
                     
             except KeyboardInterrupt:
                 msg = b'-q'
                 break    
+            except EOFError:
+                msg = b'-q'
+                break 
 
         if msg == b'-q':
             return s
 
-        s.send(msg)
-
-        resp = s.recv(1024)
+        try:
+            s.send(msg)
+            resp = s.recv(1024)
+        except socket.error:
+            resp = b''        
 
         if resp == b'':
             s = connectToServer()
